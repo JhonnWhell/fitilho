@@ -5,7 +5,7 @@
    Ao publicar qualquer mudança, aumente VERSAO para o celular baixar
    a versão nova.
    ===================================================================== */
-var VERSAO = 'fitilho-v1.1.0';
+var VERSAO = 'fitilho-v1.2.1';
 
 var ARQUIVOS = [
   './',

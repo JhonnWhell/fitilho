@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var VERSAO_APP = '1.1.0';
+  var VERSAO_APP = '1.2.1';
   var P = window.FormatoTexto1;
   var NOMES_LIVRO = { ESE: 'O Evangelho segundo o Espiritismo', LE: 'O Livro dos Espíritos' };
   var CURTO_LIVRO = { ESE: 'Evangelho', LE: 'Livro dos Espíritos' };
@@ -984,8 +984,71 @@
   });
 
   function estaInstalado() {
-    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    if (!window.matchMedia) return window.navigator.standalone === true;
+    return window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.matchMedia('(display-mode: minimal-ui)').matches ||
+      window.navigator.standalone === true;
   }
+
+  /* ---------------- instalação ---------------- */
+  // Navegadores embutidos em outros apps (WebView): não instalam PWA.
+  var RE_NAVEGADOR_INTERNO = /; wv\)|\bwv\b|WhatsApp|Instagram|FBAN|FBAV|FB_IAB|FBIOS|Line\/|MicroMessenger|Telegram|GSA\/|Snapchat|TikTok|musical_ly|Twitter/i;
+  var Instalar = {
+    evento: null,
+    instaladoAgora: false,
+    semEventoTimer: null,
+    interno: function () { return RE_NAVEGADOR_INTERNO.test(navigator.userAgent || ''); },
+    atualizar: function () {
+      var caixa = $('instalar-caixa');
+      if (!caixa) return;
+      var instalado = estaInstalado() || Instalar.instaladoAgora;
+      var interno = !instalado && Instalar.interno();
+      var botao = !instalado && !interno && !!Instalar.evento;
+      $('btn-instalar').hidden = !botao;
+      $('instalar-interno').hidden = !interno;
+      $('instalar-manual').hidden = instalado || interno || botao || !Instalar.esperouEvento;
+      caixa.hidden = instalado || !(botao || interno || !$('instalar-manual').hidden);
+    },
+    iniciar: function () {
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();          // o próprio botão grande faz o convite
+        Instalar.evento = e;
+        Instalar.atualizar();
+      });
+      window.addEventListener('appinstalled', function () {
+        Instalar.evento = null;
+        Instalar.instaladoAgora = true;
+        Instalar.atualizar();
+        toast('App instalado. Daqui em diante, abra pelo ícone “Evangelho no Lar” na tela inicial.', 6000);
+      });
+      if (window.matchMedia) {
+        var mq = window.matchMedia('(display-mode: standalone)');
+        var aoMudar = function () { Instalar.atualizar(); atualizarEstadoBib(); };
+        if (mq.addEventListener) mq.addEventListener('change', aoMudar);
+        else if (mq.addListener) mq.addListener(aoMudar);
+      }
+      // Se o Chrome não oferecer a instalação em alguns segundos, mostra o caminho pelo menu.
+      Instalar.semEventoTimer = setTimeout(function () { Instalar.esperouEvento = true; Instalar.atualizar(); }, 4000);
+      $('btn-instalar').addEventListener('click', function () {
+        var e = Instalar.evento;
+        if (!e) { Instalar.atualizar(); return; }
+        Instalar.evento = null;      // o convite só pode ser usado uma vez
+        e.prompt();
+        e.userChoice.then(function (r) {
+          if (r && r.outcome === 'accepted') {
+            Instalar.instaladoAgora = true;
+            toast('Instalando… o ícone “Evangelho no Lar” vai aparecer na tela inicial.', 6000);
+          } else {
+            toast('Instalação cancelada. Para instalar depois: ⋮ → Instalar app.', 5000);
+          }
+          Instalar.esperouEvento = true;
+          Instalar.atualizar();
+        }).catch(function () { Instalar.esperouEvento = true; Instalar.atualizar(); });
+      });
+      Instalar.atualizar();
+    }
+  };
 
   /* ---------------- início ---------------- */
   function mostrarEscolha(ult, fita) {
@@ -1011,6 +1074,7 @@
 
   function iniciar() {
     aplicarClassesCorpo();
+    Instalar.iniciar();
     ligarEventos();
     registrarSW();
     carregarCapitulos().catch(function (e) {

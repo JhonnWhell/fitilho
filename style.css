@@ -280,6 +280,16 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .sim { color: #2f6b3a; }
 .nao { color: var(--vermelho); }
 
+/* ---------- Instalação ---------- */
+.instalar-caixa { display: grid; gap: 10px; margin-bottom: 20px; }
+.btn-instalar { min-height: 68px; font-size: 1.15rem; }
+.btn-instalar svg { stroke-width: 2.6; }
+.instalar-aviso { margin: 0; padding: 12px 14px; border-radius: 12px; background: #fff6dc; border: 1.5px solid var(--ouro-claro); font-size: .95rem; line-height: 1.45; color: var(--tinta-2); }
+.instalar-aviso p { margin: 0; }
+.instalar-aviso p + p { margin-top: 6px; }
+.instalar-forte { background: #fdecee; border-color: #e3b9bd; }
+.instalar-titulo { font-size: 1.15rem; font-weight: 700; color: var(--vermelho); }
+
 /* ---------- Escolha fitilho x continuar ---------- */
 .escolha { position: fixed; inset: 0; z-index: 50; background: rgba(31, 27, 22, .45); display: flex; align-items: center; justify-content: center; padding: 16px; }
 .escolha-caixa { width: min(100%, 420px); background: var(--papel); border-radius: 18px; padding: 20px; display: grid; gap: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.25); }

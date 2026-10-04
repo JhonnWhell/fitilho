@@ -6,7 +6,9 @@
 <meta name="theme-color" content="#f6efe2">
 <meta name="color-scheme" content="light">
 <meta name="description" content="Leitor do Evangelho no Lar com destaque frase por frase.">
-<title>Fitilho</title>
+<title>Evangelho no Lar</title>
+<meta name="application-name" content="Evangelho no Lar">
+<meta name="apple-mobile-web-app-title" content="Evangelho no Lar">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -18,8 +20,22 @@
 <!-- ================= BIBLIOTECA ================= -->
 <section id="biblioteca" class="vista" aria-labelledby="bib-titulo">
   <header class="bib-topo">
-    <h1 id="bib-titulo"><span class="fita-mini" aria-hidden="true"></span>Fitilho</h1>
+    <h1 id="bib-titulo"><span class="fita-mini" aria-hidden="true"></span>Evangelho no Lar</h1>
   </header>
+
+  <div id="instalar-caixa" class="instalar-caixa" hidden>
+    <button type="button" class="btn btn-grande btn-fita btn-instalar" id="btn-instalar" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+      Instalar o app
+    </button>
+    <div id="instalar-interno" class="instalar-aviso instalar-forte" role="alert" hidden>
+      <p class="instalar-titulo">Toque em ⋮ e escolha Abrir no Chrome</p>
+      <p>Esta página está aberta dentro de outro app (WhatsApp ou parecido). Aqui o app não instala, e os textos importados aqui não aparecem depois no Chrome.</p>
+    </div>
+    <p id="instalar-manual" class="instalar-aviso" hidden>
+      Se o botão de instalar não aparecer: toque em ⋮ e escolha <b>Instalar app</b> (ou <b>Adicionar à tela inicial</b>). Se aparecer a opção <b>Abrir no Chrome</b>, escolha ela primeiro. Se o app já estiver instalado, abra pelo ícone “Evangelho no Lar”.
+    </p>
+  </div>
 
   <div class="bib-acoes">
     <button type="button" class="btn btn-grande btn-primario" id="btn-importar">Importar arquivo .txt</button>
@@ -154,7 +170,7 @@
   <source src="media/acordado.mp4" type="video/mp4">
 </video>
 
-<noscript><p class="noscript">O Fitilho precisa de JavaScript ligado.</p></noscript>
+<noscript><p class="noscript">O app precisa de JavaScript ligado.</p></noscript>
 
 <script src="parser.js"></script>
 <script src="app.js"></script>
