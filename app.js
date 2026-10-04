@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var VERSAO_APP = '1.2.1';
+  var VERSAO_APP = '1.2.2';
   var P = window.FormatoTexto1;
   var NOMES_LIVRO = { ESE: 'O Evangelho segundo o Espiritismo', LE: 'O Livro dos Espíritos' };
   var CURTO_LIVRO = { ESE: 'Evangelho', LE: 'Livro dos Espíritos' };
@@ -999,16 +999,26 @@
     instaladoAgora: false,
     semEventoTimer: null,
     interno: function () { return RE_NAVEGADOR_INTERNO.test(navigator.userAgent || ''); },
+    ios: function () {
+      var ua = navigator.userAgent || '';
+      return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    },
+    // No iPhone, apps como Instagram e Facebook abrem links num navegador próprio.
+    iosInterno: function () { return /FBAN|FBAV|FBIOS|Instagram|Line\/|MicroMessenger|Snapchat|TikTok|musical_ly|GSA\//i.test(navigator.userAgent || ''); },
     atualizar: function () {
       var caixa = $('instalar-caixa');
       if (!caixa) return;
       var instalado = estaInstalado() || Instalar.instaladoAgora;
-      var interno = !instalado && Instalar.interno();
-      var botao = !instalado && !interno && !!Instalar.evento;
+      var ios = !instalado && Instalar.ios();
+      var iosInterno = ios && Instalar.iosInterno();
+      var interno = !instalado && !ios && Instalar.interno();
+      var botao = !instalado && !ios && !interno && !!Instalar.evento;
       $('btn-instalar').hidden = !botao;
       $('instalar-interno').hidden = !interno;
-      $('instalar-manual').hidden = instalado || interno || botao || !Instalar.esperouEvento;
-      caixa.hidden = instalado || !(botao || interno || !$('instalar-manual').hidden);
+      $('instalar-ios').hidden = !ios || iosInterno;
+      $('instalar-ios-interno').hidden = !iosInterno;
+      $('instalar-manual').hidden = instalado || ios || interno || botao || !Instalar.esperouEvento;
+      caixa.hidden = instalado || !(botao || interno || ios || !$('instalar-manual').hidden);
     },
     iniciar: function () {
       window.addEventListener('beforeinstallprompt', function (e) {
